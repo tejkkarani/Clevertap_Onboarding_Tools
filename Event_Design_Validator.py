@@ -1,5 +1,7 @@
 import requests
 import json
+import chilkat
+import sys
 import unicodecsv as csv
 en = []
 ep = []
@@ -118,3 +120,19 @@ while i < len(en):
 print(vn)
 print(vp)
 print(vpd)
+csv = chilkat.CkCsv()
+csv.put_HasColumnNames(True)
+success = csv.LoadFile(csv_path)
+if success != True:
+    print(csv.lastErrorText())
+    sys.exit()
+i = 0
+while i < len(en):
+    success = csv.SetCell(i, 8, vn[i])
+    success = csv.SetCell(i, 9, vp[i])
+    success = csv.SetCell(i, 10, vpd[i])
+    i = i+1
+csvDoc = csv.saveToString()
+success = csv.SaveFile(csv_path)
+if success != True:
+    print(csv.lastErrorText())
