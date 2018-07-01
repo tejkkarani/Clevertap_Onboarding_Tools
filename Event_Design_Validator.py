@@ -22,6 +22,12 @@ vn = []
 vp = []
 i = 0
 while i < len(en):
+    if en[i] == '' and ep[i] == '' and epd[i] == '':
+        vn.append('')
+        vp.append('')
+        vpd[i] = ''
+        i = i+1
+        continue
     t1 = '{"event_name":"'
     if en[i] != '':
         t2 = en[i]
@@ -36,13 +42,21 @@ while i < len(en):
     r = requests.post(url, data=pay, headers=headers)
     j = json.loads(r.text)
     if j['status'] != "success":
-        vn.append('no')
-        vp.append('no')
-        vpd[i] = 'no'
+        if en[i] != '':
+            vn.append('no')
+            vp.append('no')
+            vpd[i] = 'no'
+        else:
+            vn.append('')
+            vp.append('no')
+            vpd[i] = 'no'
         i = i+1
         continue
     else:
-        vn.append('yes')
+        if en[i] != '':
+            vn.append('yes')
+        else:
+            vn.append('')
     print(j)
     x = j['cursor']
     urlp = url + '?cursor=' + x
@@ -66,16 +80,40 @@ while i < len(en):
                 k = k+1
         except:
             pass
+    try:
+        nextc = jj['next_cursor']
+    except:
+        nextc = ''
+    while nextc != '':
+        urlp = url + '?cursor=' + nextc
+        rr = requests.get(urlp, headers=headers)
+        jj = json.loads(rr.text)
+        k = 0
+        if ep[i] != '':
+            try:
+                while k < len(jj['records']):
+                    try:
+                        po = jj['records'][k]['event_props'][ep[i]]
+                        if (type(po) is unicode) and (not po.startswith('$D')):
+                            vpd[i] = 'yes'
+                        else:
+                            vpd[i] = 'no'
+                        kt = 1
+                    except:
+                        pass
+                    k = k + 1
+            except:
+                pass
+        try:
+            nextc = jj['next_cursor']
+        except:
+            nextc = ''
     if ep[i] != '':
         if kt == 1:
             vp.append('yes')
         else:
             vp.append('no')
             vpd[i] = 'no'
-    else:
-        vn[i] = ''
-        vp.append('')
-        vpd[i] = ''
     i = i+1
 print(vn)
 print(vp)
