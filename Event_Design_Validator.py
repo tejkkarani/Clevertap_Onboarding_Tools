@@ -7,3 +7,8 @@ headers = {'X-CleverTap-Account-Id': '4W9-5K8-7R5Z', 'X-CleverTap-Passcode': 'AC
 r = requests.post(url, data=pay, headers=headers)
 j = json.loads(r.text)
 print(j)
+x = j['cursor']
+urlp = url + '?cursor=' + x
+rr = requests.get(urlp, headers=headers)
+jj = json.loads(rr.text)
+print(jj)
