@@ -6,7 +6,14 @@ epd = "String"
 vn = ''
 vp = ''
 vpd = ''
-pay = '{"event_name":"test pressed","from":20180101,"to":20180604}'
+t1 = '{"event_name":"'
+t2 = en
+t3 = '","from":'
+t4 = str(20180101)
+t5 = ',"to":'
+t6 = str(20180604)
+t7 = '}'
+pay = t1 + t2 + t3 + t4 + t5 + t6 + t7
 url = 'https://api.clevertap.com/1/events.json'
 headers = {'X-CleverTap-Account-Id': '4W9-5K8-7R5Z', 'X-CleverTap-Passcode': 'ACS-JWW-IWKL', 'content-type': 'application/json'}
 r = requests.post(url, data=pay, headers=headers)
